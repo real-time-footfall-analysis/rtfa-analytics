@@ -10,7 +10,7 @@ elif [ "$TRAVIS_BRANCH" == "master" ]; then
   export PATH=$PATH:$HOME/.local/bin 
   $(aws ecr get-login --no-include-email --region eu-central-1) #needs AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY envvars
 
-  docker build -t rtfa-analytics -f rtfa-analytics/Dockerfile rtfa-analytics
+  docker build -t rtfa-analytics .
 	docker tag rtfa-analytics:latest 155067752274.dkr.ecr.eu-central-1.amazonaws.com/rtfa-analytics:latest
 	docker push 155067752274.dkr.ecr.eu-central-1.amazonaws.com/rtfa-analytics:latest
 
