@@ -6,7 +6,7 @@ if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
 elif [ "$TRAVIS_BRANCH" == "master" ]; then
   echo "Deploying services to production"
   docker --version
-  pip install --user awscli
+  pip install awscli
   export PATH=$PATH:$HOME/.local/bin 
   $(aws ecr get-login --no-include-email --region eu-central-1) #needs AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY envvars
 
