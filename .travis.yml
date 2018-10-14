@@ -4,5 +4,6 @@ services:
 language: python
 python:
  - "3.6"
+before_install: chmod +x deploy.sh
 script: docker build -t rtfa-analytics .
 after_success: ./deploy.sh
