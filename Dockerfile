@@ -3,3 +3,6 @@ COPY . .
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 RUN pytest test
+ENTRYPOINT ["python"]
+CMD ["interface.py"]
+EXPOSE 80
