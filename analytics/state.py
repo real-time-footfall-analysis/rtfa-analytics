@@ -17,22 +17,28 @@ class Person:
                 self.exits.append((timestamp, region))
 
     def get_location(self, timestamp):
-        # Perform binary search over entries, if this place was exited since, return None.
-        prev_entry_index = self.previous_entry_index(timestamp)
-        prev_exit_index = self.previous_exit_index(timestamp)
-        return self.get_location_from_indexes(prev_entry_index, prev_exit_index)
 
-    def get_location_from_indexes(self, entry_index, prev_exit_index):
+        # Perform binary search over entries, find most recent entry and exit.
+        entry_index = self.previous_entry_index(timestamp)
+        prev_exit_index = self.previous_exit_index(timestamp)
+
+        # Work backwards finding most recent entry that hasn't been exited.
         if entry_index is None or entry_index == -1:
             return None
         if prev_exit_index is None or prev_exit_index == -1:
             return self.entries[entry_index][1]
+
+        exit_history = set()
         exit_pointer = prev_exit_index
-        while exit_pointer >= 0 and self.exits[exit_pointer][0] >= self.entries[entry_index][0]:
-            if self.exits[exit_pointer][1] == self.entries[entry_index][1]:
-                return self.get_location_from_indexes(entry_index - 1, prev_exit_index)
-            exit_pointer -= 1
-        return self.entries[entry_index][1]
+        while entry_index >= 0:
+            entry_time, entry_region = self.entries[entry_index]
+            while exit_pointer >= 0 and self.exits[exit_pointer][0] >= entry_time:
+                exit_history.add(self.exits[exit_pointer][1])
+                exit_pointer -= 1
+            if entry_region not in exit_history:
+                return entry_region
+            entry_index -= 1
+        return None
 
     def previous_entry_index(self, t):
         last_entry_index = self.__binary_search_movements(self.entries, t)
