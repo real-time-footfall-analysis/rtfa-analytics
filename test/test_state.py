@@ -95,3 +95,60 @@ def test_get_location_with_t_after_last_entry():
     movements1 = [(t, r, True) for t, r in entries1] + [(t, r, False) for t, r in exits1]
     p1 = Person(movements1)
     assert p1.get_location(382) == 'b'
+
+
+def test_empty_get_next_location():
+    entries1 = []
+    exits1 = []
+    movements1 = [(t, r, True) for t, r in entries1] + [(t, r, False) for t, r in exits1]
+    p1 = Person(movements1)
+    assert p1.get_next_location(2) is None
+
+
+def test_basic_get_next_location_1():
+    entries1 = [(3, 'a')]
+    exits1 = []
+    movements1 = [(t, r, True) for t, r in entries1] + [(t, r, False) for t, r in exits1]
+    p1 = Person(movements1)
+    assert p1.get_next_location(2) is None
+
+
+def test_basic_get_next_location_2():
+    entries1 = [(3, 'a')]
+    exits1 = []
+    movements1 = [(t, r, True) for t, r in entries1] + [(t, r, False) for t, r in exits1]
+    p1 = Person(movements1)
+    assert p1.get_next_location(4) == 'a'
+
+
+def test_iteration_get_next_location_1():
+    entries1 = [(3, 'a'), (6, 'b')]
+    exits1 = []
+    movements1 = [(t, r, True) for t, r in entries1] + [(t, r, False) for t, r in exits1]
+    p1 = Person(movements1)
+    assert p1.get_next_location(4) == 'a'
+    assert p1.get_next_location(4) == 'b'
+
+
+def test_iteration_get_next_location_with_exits_1():
+    entries1 = [(2, 'a'), (6, 'b')]
+    exits1 = [(4, 'a'), (8, 'b')]
+    movements1 = [(t, r, True) for t, r in entries1] + [(t, r, False) for t, r in exits1]
+    p1 = Person(movements1)
+    assert p1.get_next_location(1) is None
+    assert p1.get_next_location(2) == 'a'
+    assert p1.get_next_location(2) is None
+    assert p1.get_next_location(2) == 'b'
+    assert  p1.get_next_location(2) is None
+    assert p1.get_next_location(2) is None
+
+
+def test_iteration_with_reset():
+    entries1 = [(2, 'a'), (6, 'b')]
+    exits1 = [(4, 'a'), (8, 'b')]
+    movements1 = [(t, r, True) for t, r in entries1] + [(t, r, False) for t, r in exits1]
+    p1 = Person(movements1)
+    assert p1.get_next_location(2) == 'a'
+    assert p1.get_next_location(2) is None
+    p1.reset_iteration()
+    assert p1.get_next_location(2) == 'a'

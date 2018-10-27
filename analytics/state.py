@@ -1,3 +1,4 @@
+from collections import OrderedDict
 from operator import itemgetter
 
 
@@ -9,8 +10,8 @@ class Person:
 
     def __init__(self, movements=None):
 
+        # Movement storage.
         self.entries, self.exits = [], []
-
         if movements is not None:
             movements.sort(key=itemgetter(0))
             for (timestamp, region, entered) in movements:
@@ -18,6 +19,42 @@ class Person:
                     self.entries.append((timestamp, region))
                 else:
                     self.exits.append((timestamp, region))
+
+        # Used for iteration over events.
+        self.entry_event_pointer = 0
+        self.exit_event_pointer = 0
+        self.time_pointer = 0
+        self.current_locations = OrderedDict()
+
+    def reset_iteration(self):
+        self.entry_event_pointer = 0
+        self.exit_event_pointer = 0
+        self.time_pointer = 0
+        self.current_locations = OrderedDict()
+
+    def get_next_location(self, time_interval):
+
+        # Increase time pointer by set interval.
+        self.time_pointer += time_interval
+
+        # Add entries to ordered dictionary up to this point.
+        while self.entry_event_pointer < len(self.entries) and \
+                        self.entries[self.entry_event_pointer][0] <= self.time_pointer:
+            self.current_locations[self.entries[self.entry_event_pointer][1]] = True
+            self.entry_event_pointer += 1
+
+        # Remove any of those entries that have since been exited.
+        while self.exit_event_pointer < len(self.exits) and \
+                        self.exits[self.exit_event_pointer][0] <= self.time_pointer:
+            del self.current_locations[self.exits[self.exit_event_pointer][1]]
+            self.exit_event_pointer += 1
+
+        current_location = None
+        if self.current_locations:
+            # Pop off and append back on (peak is not supported).
+            current_location, _ = self.current_locations.popitem()
+            self.current_locations[current_location] = True
+        return current_location
 
     def get_location(self, timestamp):
 
