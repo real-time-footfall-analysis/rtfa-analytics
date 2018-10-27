@@ -7,14 +7,17 @@ class Person:
     # Movements are of type [(timestamp, region, entered)], and are SORTED.
     # Entered is a boolean specifying if the region has been entered or exited.
 
-    def __init__(self, movements):
-        movements.sort(key=itemgetter(0))
+    def __init__(self, movements=None):
+
         self.entries, self.exits = [], []
-        for (timestamp, region, entered) in movements:
-            if entered:
-                self.entries.append((timestamp, region))
-            else:
-                self.exits.append((timestamp, region))
+
+        if movements is not None:
+            movements.sort(key=itemgetter(0))
+            for (timestamp, region, entered) in movements:
+                if entered:
+                    self.entries.append((timestamp, region))
+                else:
+                    self.exits.append((timestamp, region))
 
     def get_location(self, timestamp):
 
