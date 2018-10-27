@@ -1,6 +1,31 @@
 from collections import OrderedDict
 from operator import itemgetter
 
+from collections import defaultdict
+
+
+class EventState:
+
+    # Maintains list of people at an event, and can efficiently build position maps.
+
+    def __init__(self):
+
+        # Maps person_id -> person object.
+        self.people = {}
+
+    def build_heat_map(self, t):
+        # Builds a heat-map by region at a particular timestamp t. DO NOT use this function iteratively,
+        # for an efficient iterative version use build_heat_map_history.
+        regions = defaultdict(int)
+        for person in self.people.values():
+            location = person.get_location(t)
+            if location is not None:
+                regions[person.get_location(t)] += 1
+        return regions
+
+    def build_heat_map_history(self):
+        pass
+
 
 class Person:
 
@@ -8,7 +33,10 @@ class Person:
     # Movements are of type [(timestamp, region, entered)], and are SORTED.
     # Entered is a boolean specifying if the region has been entered or exited.
 
-    def __init__(self, movements=None):
+    def __init__(self, uid, movements=None):
+
+        # Data
+        self.id = uid
 
         # Movement storage.
         self.entries, self.exits = [], []
