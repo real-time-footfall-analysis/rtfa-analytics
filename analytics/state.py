@@ -23,8 +23,18 @@ class EventState:
                 regions[person.get_location(t)] += 1
         return regions
 
-    def build_heat_map_history(self):
-        pass
+    def build_heat_map_history(self, time_interval, time_end):
+        # Efficiently iterates through people, adding their location data to a history of heatmaps at a given
+        # time_interval.
+        heatmaps = defaultdict(lambda: defaultdict(int))
+        for person in self.people.values():
+            time = 0
+            while time + time_interval <= time_end:
+                time += time_interval
+                location = person.get_next_location(time_interval)
+                if location is not None:
+                    heatmaps[time][location] += 1
+        return heatmaps
 
 
 class Person:
@@ -60,22 +70,28 @@ class Person:
         self.time_pointer = 0
         self.current_locations = OrderedDict()
 
+    def has_more_movements(self):
+        # Returns whether there are more movements to receive from iterator.
+        return self.entry_event_pointer == len(self.entries) and self.exit_event_pointer == len(self.exits)
+
     def get_next_location(self, time_interval):
 
         # Increase time pointer by set interval.
         self.time_pointer += time_interval
 
-        # Add entries to ordered dictionary up to this point.
-        while self.entry_event_pointer < len(self.entries) and \
-                        self.entries[self.entry_event_pointer][0] <= self.time_pointer:
-            self.current_locations[self.entries[self.entry_event_pointer][1]] = True
-            self.entry_event_pointer += 1
-
-        # Remove any of those entries that have since been exited.
-        while self.exit_event_pointer < len(self.exits) and \
-                        self.exits[self.exit_event_pointer][0] <= self.time_pointer:
-            del self.current_locations[self.exits[self.exit_event_pointer][1]]
-            self.exit_event_pointer += 1
+        # Add entries to ordered dict and remove exits from ordered dict sequentially (important).
+        while (self.entry_event_pointer < len(self.entries) and
+                       self.entries[self.entry_event_pointer][0] <= self.time_pointer) or \
+                (self.exit_event_pointer < len(self.exits) and
+                        self.exits[self.exit_event_pointer][0] <= self.time_pointer):
+            next_entry_time = self.entries[self.entry_event_pointer][0] if self.entry_event_pointer < len(self.entries) else float('inf')
+            next_exit_time = self.exits[self.exit_event_pointer][0] if self.exit_event_pointer < len(self.exits) else float('inf')
+            if next_entry_time < next_exit_time:
+                self.current_locations[self.entries[self.entry_event_pointer][1]] = True
+                self.entry_event_pointer += 1
+            else:
+                del self.current_locations[self.exits[self.exit_event_pointer][1]]
+                self.exit_event_pointer += 1
 
         current_location = None
         if self.current_locations:
