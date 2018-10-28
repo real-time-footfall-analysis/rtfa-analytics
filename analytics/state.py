@@ -8,10 +8,10 @@ class EventState:
 
     # Maintains list of people at an event, and can efficiently build position maps.
 
-    def __init__(self):
+    def __init__(self, people=None):
 
         # Maps person_id -> person object.
-        self.people = {}
+        self.people = {} if people is None else people
 
     def build_heat_map(self, t):
         # Builds a heat-map by region at a particular timestamp t. DO NOT use this function iteratively,
