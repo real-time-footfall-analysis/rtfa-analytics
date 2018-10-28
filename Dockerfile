@@ -4,5 +4,5 @@ RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 RUN pytest test -v
 ENTRYPOINT ["python"]
-CMD ["interface.py"]
+CMD ["webapp.py"]
 EXPOSE 80
