@@ -48,13 +48,12 @@ class EventRetriever:
         # returns EventState.
 
         # Generate SQL statement.
-        fields = ",".join(["uuid", "timestamp", "regionId", "entering"])
+        fields = ", ".join(["uuid", "timestamp", "regionId", "entering"])
 
-        constraints = "eventId = %s AND uuid = %s" % self.event_id
+        constraints = "eventId=%s" % self.event_id
         constraints += " AND timestamp >= %s" % time_start if time_start is not None else ""
         constraints += " AND timestamp < %s" % time_end if time_end is not None else ""
-
-        sql = "SELECT %s from %s WHERE %s" % (fields, self.log_table_name, constraints)
+        sql = "SELECT %s FROM %s WHERE %s" % (fields, self.log_table_name, constraints)
         rows = self.__connect_and_execute(sql)
 
         people = defaultdict(Person)
@@ -73,12 +72,11 @@ class EventRetriever:
         # Retrieves movements for a given person uid, and returns them as a Person object.
 
         # Generate SQL and execute statement.
-        fields = ",".join(["timestamp", "regionId", "entering"])
-        constraints = "eventId = %s AND uuid = %s" % (self.event_id, uid)
-        sql = "SELECT %s from %s WHERE %s" % (fields, self.log_table_name, constraints)
+        fields = ", ".join(["timestamp", "regionId", "entering"])
+        constraints = "eventId=%s AND uuid=%s" % (self.event_id, uid)
+        sql = "SELECT %s FROM %s WHERE %s" % (fields, self.log_table_name, constraints)
         rows = self.__connect_and_execute(sql)
 
         # Parse results and return person.
         person = Person(uid, movements=rows)
         return person
-
