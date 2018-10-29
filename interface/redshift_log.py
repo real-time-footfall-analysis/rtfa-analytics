@@ -65,7 +65,7 @@ class EventRetriever:
             else:
                 people[uid].exits.append((timestamp, region))
 
-        event_state = EventState(people)
+        event_state = EventState(self.event_id, people)
         return event_state
 
     def retrieve_person(self, uid):
