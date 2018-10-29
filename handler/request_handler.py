@@ -6,7 +6,6 @@ from tasks.task_mappings import FREQUENCY_GROUPS, TASK_IDS
 
 
 class RequestHandler:
-
     def __init__(self):
         self.static_data_source: StaticDataInterface = None
         self.log_source: LogInterface = RedshiftRetriever()

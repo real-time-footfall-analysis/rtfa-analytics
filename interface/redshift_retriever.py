@@ -19,7 +19,6 @@ DEFAULT_CONFIG = {
 
 
 class RedshiftRetriever(LogInterface):
-
     # Used to retrieve events from AWS Redshift database. Parses them to objects from utils/state.
 
     def __init__(self, config=None, log_table_name=None):

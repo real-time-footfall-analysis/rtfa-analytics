@@ -2,7 +2,6 @@ from typing import Set
 
 
 class StaticDataInterface:
-
     def __init__(self): pass
 
     # Returns set of event_ids that are currently running.
