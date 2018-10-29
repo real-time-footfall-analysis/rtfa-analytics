@@ -1,9 +1,9 @@
-from tasks import dummy_task
+from tasks.average_stay_time import average_stay_time
 from typing import Callable, Dict
 
 # Maps task ids to task definitions, used to find enabled tasks for a particular event,
 TASK_IDS: Dict[int, Callable[..., Dict]] = {
-    1: dummy_task
+    1: average_stay_time
 }
 
 # Maps frequency groups to set of task_ids to be executed at particular frequency.

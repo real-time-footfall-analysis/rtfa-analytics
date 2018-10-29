@@ -3,7 +3,7 @@ import os
 # Configuration dictionary.
 import psycopg2 as psycopg2
 
-from interface.log_source import LogInterface
+from interface.log_interface import LogInterface
 from utils.heatmap_generator import HeatmapGenerator
 from utils.person_tracker import PersonTracker
 
