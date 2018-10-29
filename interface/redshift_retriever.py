@@ -11,8 +11,8 @@ DEFAULT_LOG_TABLE_NAME = "log"
 
 DEFAULT_CONFIG = {
     'dbname': 'log',
-    'user': os.environ['RTFA-REDSHIFT-USR'],
-    'pwd': os.environ['RTFA-REDSHIFT-PWD'],
+    'user': os.environ['RTFA_REDSHIFT_USR'],
+    'pwd': os.environ['RTFA_REDSHIFT_PWD'],
     'host': 'movement-log.cnadblxzqjnp.eu-central-1.redshift.amazonaws.com',
     'port': '5439'
 }
