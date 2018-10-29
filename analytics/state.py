@@ -76,7 +76,7 @@ class Person:
 
     def has_more_movements(self):
         # Returns whether there are more movements to receive from iterator.
-        return self.entry_event_pointer == len(self.entries) and self.exit_event_pointer == len(self.exits)
+        return self.entry_event_pointer < len(self.entries) or self.exit_event_pointer < len(self.exits)
 
     def get_next_location(self, time_interval):
 
