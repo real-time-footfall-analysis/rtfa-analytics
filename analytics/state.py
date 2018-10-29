@@ -13,6 +13,8 @@ class EventState:
 
         # Meta data.
         self.event = event
+        self.first_movement = None
+        self.last_movement = None
 
         # Maps person_id -> person object.
         self.people = {} if people is None else people
@@ -27,12 +29,14 @@ class EventState:
                 regions[person.get_location(t)] += 1
         return regions
 
-    def build_heat_map_history(self, time_interval, time_end):
+    def build_heat_map_history(self, time_interval, duration=None):
         # Efficiently iterates through people, adding their location data to a history of heatmaps at a given
         # time_interval.
         heatmaps = defaultdict(lambda: defaultdict(int))
+        duration = duration if duration is not None else self.last_movement
         for person in self.people.values():
-            time = 0
+            time = self.first_movement
+            time_end = self.first_movement + duration
             while time + time_interval <= time_end:
                 time += time_interval
                 location = person.get_next_location(time_interval)

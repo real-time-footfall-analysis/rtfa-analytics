@@ -248,7 +248,7 @@ def test_build_heatmap_no_exit():
     assert event.build_heat_map(100) == {'b':1}
 
 
-def test_build_heatmap_history_basic():
+def test_build_heatmap_history_basic_auto_duration():
     entries1 = [(2, 'a'), (6, 'b')]
     exits1 = [(4, 'a'), (8, 'b')]
     movements1 = [(t, r, True) for t, r in entries1] + [(t, r, False) for t, r in exits1]
@@ -262,19 +262,21 @@ def test_build_heatmap_history_basic():
     p2 = Person(1, movements2)
 
     event = EventState(0)
+    event.first_movement = 1
+    event.last_movement = 9
     event.people = {p1.id: p1, p2.id: p2}
 
-    expected_at_2 = {'a':1, 'b': 1}
-    expected_at_4 = {'b':1}
-    expected_at_6 = {'b':2}
-    expected_at_8 = {'b':1}
+    expected_at_3 = {'a':1, 'b': 1}
+    expected_at_5 = {'b':1}
+    expected_at_7 = {'b':2}
+    expected_at_9 = {'b':1}
     # Nothing expected at 10.
 
-    expected = {2:expected_at_2, 4:expected_at_4, 6:expected_at_6, 8:expected_at_8}
-    assert expected == event.build_heat_map_history(2, 10)
+    expected = {3:expected_at_3, 5:expected_at_5, 7:expected_at_7, 9:expected_at_9}
+    assert expected == event.build_heat_map_history(2)
 
 
-def test_build_heatmap_history_advanced():
+def test_build_heatmap_history_advanced_auto_duration():
     entries1 = [(1, 'a'), (6, 'b')]
     exits1 = [(4, 'a'), (8, 'b')]
     movements1 = [(t, r, True) for t, r in entries1] + [(t, r, False) for t, r in exits1]
@@ -287,24 +289,80 @@ def test_build_heatmap_history_advanced():
     movements2.sort(key=itemgetter(0))
     p2 = Person(1, movements2)
 
-    entries3 = [(1, 'a'), (4, 'a'), (9, 'c')]
+    entries3 = [(1, 'a'), (4, 'a'), (10, 'c')]
     exits3 = [(3, 'a'), (7, 'a')]
     movements3 = [(t, r, True) for t, r in entries3] + [(t, r, False) for t, r in exits3]
     movements3.sort(key=itemgetter(0))
     p3 = Person(2, movements3)
 
     event = EventState(0)
+    event.first_movement = 1
+    event.last_movement = 10
     event.people = {p1.id: p1, p2.id: p2, p3.id: p3}
 
-    expected_at_2 = {'a':2, 'b': 1}
-    expected_at_4 = {'a':1, 'b':1}
-    expected_at_6 = {'a':1, 'b':2}
-    expected_at_8 = {'b':1}
-    expected_at_10 = {'c':1}
+    expected_at_3 = {'a':2, 'b': 1}
+    expected_at_5 = {'a':1, 'b':1}
+    expected_at_7 = {'a':1, 'b':2}
+    expected_at_9 = {'b':1}
+    expected_at_11 = {'c':1}
 
-    expected = {2:expected_at_2, 4:expected_at_4, 6:expected_at_6, 8:expected_at_8, 10:expected_at_10}
-    actual = event.build_heat_map_history(2, 11)
+    expected = {3:expected_at_3, 5:expected_at_5, 7:expected_at_7, 9:expected_at_9, 11:expected_at_11}
+    actual = event.build_heat_map_history(2)
     assert expected == actual
+
+
+def test_build_heatmap_history_basic_extended_duration():
+    entries1 = [(2, 'a'), (6, 'b')]
+    exits1 = [(4, 'a'), (8, 'b')]
+    movements1 = [(t, r, True) for t, r in entries1] + [(t, r, False) for t, r in exits1]
+    movements1.sort(key=itemgetter(0))
+    p1 = Person(0, movements1)
+
+    entries2 = [(1, 'b')]
+    exits2 = [(9, 'b')]
+    movements2 = [(t, r, True) for t, r in entries2] + [(t, r, False) for t, r in exits2]
+    movements2.sort(key=itemgetter(0))
+    p2 = Person(1, movements2)
+
+    event = EventState(0)
+    event.first_movement = 1
+    event.last_movement = 9
+    event.people = {p1.id: p1, p2.id: p2}
+
+    expected_at_3 = {'a':1, 'b': 1}
+    expected_at_5 = {'b':1}
+    expected_at_7 = {'b':2}
+    expected_at_9 = {'b':1}
+    # Nothing expected at 10.
+
+    expected = {3:expected_at_3, 5:expected_at_5, 7:expected_at_7, 9:expected_at_9}
+    assert expected == event.build_heat_map_history(2, duration=20)
+
+
+def test_build_heatmap_history_basic_bounded_duration():
+    entries1 = [(2, 'a'), (6, 'b')]
+    exits1 = [(4, 'a'), (8, 'b')]
+    movements1 = [(t, r, True) for t, r in entries1] + [(t, r, False) for t, r in exits1]
+    movements1.sort(key=itemgetter(0))
+    p1 = Person(0, movements1)
+
+    entries2 = [(1, 'b')]
+    exits2 = [(9, 'b')]
+    movements2 = [(t, r, True) for t, r in entries2] + [(t, r, False) for t, r in exits2]
+    movements2.sort(key=itemgetter(0))
+    p2 = Person(1, movements2)
+
+    event = EventState(0)
+    event.first_movement = 1
+    event.last_movement = 9
+    event.people = {p1.id: p1, p2.id: p2}
+
+    expected_at_3 = {'a':1, 'b': 1}
+    expected_at_5 = {'b':1}
+    # Nothing expected at 10.
+
+    expected = {3:expected_at_3, 5:expected_at_5}
+    assert expected == event.build_heat_map_history(2, duration=4)
 
 
 def test_average_stay_time_basic():
