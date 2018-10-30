@@ -4,8 +4,6 @@ import os
 import psycopg2 as psycopg2
 
 from interface.log_interface import LogInterface
-from utils.heatmap_generator import HeatmapGenerator
-from utils.person_tracker import PersonTracker
 
 DEFAULT_LOG_TABLE_NAME = "log"
 
@@ -32,7 +30,9 @@ class RedshiftRetriever(LogInterface):
         connection = psycopg2.connect(dbname=config['dbname'], host=config['host'], port=config['port'],
                                       user=config['user'],
                                       password=config['pwd'])
+
         cursor = connection.cursor()
+
 
         # Make sql request and store results.
         cursor.execute(sql)
