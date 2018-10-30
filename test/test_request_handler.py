@@ -2,7 +2,7 @@ from mock import patch
 
 from handler.request_handler import RequestHandler
 
-'''
+
 def test_average_stay_time_basic():
     with patch('interface.static_data_interface.StaticDataInterface') as static_data_interface, \
             patch('interface.log_interface.LogInterface') as log_interface, \
@@ -17,4 +17,3 @@ def test_average_stay_time_basic():
                                  data_dest=dest_interface)
         handler.execute_tasks(5)
         dest_interface.update_object.assert_called_once_with(1, 0, {'a': 7.0})
-'''
