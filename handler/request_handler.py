@@ -1,6 +1,5 @@
 from interface.destination_interface import DestinationInterface
 from interface.log_interface import LogInterface
-from interface.redshift_retriever import RedshiftRetriever
 from interface.static_data_interface import StaticDataInterface
 from tasks.task_mappings import FREQUENCY_GROUPS, TASK_IDS
 
