@@ -9,7 +9,7 @@ class RequestHandler:
     def __init__(self, static_data_source=None, log_source=None, data_dest=None):
         # TODO: These None values will be replaced.
         self.static_data_source: StaticDataInterface = None if static_data_source is None else static_data_source
-        self.log_source: LogInterface = RedshiftRetriever() if log_source is None else log_source
+        self.log_source: LogInterface = None if log_source is None else log_source
         self.data_dest: DestinationInterface = None if data_dest is None else data_dest
 
     def execute_tasks(self, frequency_group):
