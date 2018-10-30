@@ -7,21 +7,22 @@ from interface.log_interface import LogInterface
 
 DEFAULT_LOG_TABLE_NAME = "log"
 
-DEFAULT_CONFIG = {
-    'dbname': 'log',
-    'user': os.environ['RTFA_REDSHIFT_USR'],
-    'pwd': os.environ['RTFA_REDSHIFT_PWD'],
-    'host': 'movement-log.cnadblxzqjnp.eu-central-1.redshift.amazonaws.com',
-    'port': '5439'
-}
-
 
 class RedshiftRetriever(LogInterface):
     # Used to retrieve events from AWS Redshift database. Parses them to objects from utils/state.
 
     def __init__(self, config=None, log_table_name=None):
         super().__init__()
-        self.config = DEFAULT_CONFIG if config is None else config
+
+        default_config = {
+            'dbname': 'log',
+            'user': os.environ['RTFA_REDSHIFT_USR'],
+            'pwd': os.environ['RTFA_REDSHIFT_PWD'],
+            'host': 'movement-log.cnadblxzqjnp.eu-central-1.redshift.amazonaws.com',
+            'port': '5439'
+        }
+
+        self.config = default_config if config is None else config
         self.log_table_name = DEFAULT_LOG_TABLE_NAME if log_table_name is None else log_table_name
 
     def __connect_and_execute(self, sql):
@@ -32,7 +33,6 @@ class RedshiftRetriever(LogInterface):
                                       password=config['pwd'])
 
         cursor = connection.cursor()
-
 
         # Make sql request and store results.
         cursor.execute(sql)
