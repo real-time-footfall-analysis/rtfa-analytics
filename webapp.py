@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 @app.route("/health")
 def health():
-    return 200
+    return '', 200
 
 
 @app.route("/compute/<int:freqGroupID>")
