@@ -2,3 +2,4 @@ mock
 pytest
 Flask
 psycopg2
+boto3
