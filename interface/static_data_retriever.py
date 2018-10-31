@@ -47,8 +47,11 @@ class StaticDataRetriever(StaticDataInterface):
 
     # Returns set of event_ids that are currently running.
     def get_running_events(self) -> Set:
-        # TODO: Link this to a table.
-        return {1, 2}
+        # Return all events that have enabled tasks.
+        sql = "SELECT DISTINCT event_id FROM %s" % self.enabled_event_tasks_table
+        rows = self.__connect_and_execute(sql)
+        enabled_events = set([row[0] for row in rows])
+        return enabled_events
 
     # Returns set of enabled task ids for a particular event.
     def get_enabled_tasks(self, event_id) -> Set:
