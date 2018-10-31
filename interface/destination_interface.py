@@ -20,24 +20,24 @@ class DestinationInterface:
         self.__logger = logging.StreamHandler(sys.stdout)
 
     # Credit: https://stackoverflow.com/a/50815499/3837124
-    def recMap(self, it, f):
+    def rec_map(self, it, f):
         if isinstance(it, dict):
             acc = {}
             for key, value in it.items():
-                acc[key] = self.recMap(value, f)
+                acc[key] = self.rec_map(value, f)
             return acc
 
         elif isinstance(it, (list, tuple, set)):
             acc = []
             for item in it:
-                acc.append(self.recMap(item, f))
+                acc.append(self.rec_map(item, f))
             return type(it)(acc)
 
         else:
             return f(it)
 
     # Conversion between python and dynamodb types
-    def convToDynoDBTypes(self, item):
+    def conv_to_dynodb_types(self, item):
         if isinstance(item, float):
             return decimal.Decimal(str(item))
         else:
@@ -45,7 +45,7 @@ class DestinationInterface:
 
     def update_object(self, task_id, event_id, json_obj: Dict):
         try:
-            dynamo_item = self.recMap(json_obj, self.convToDynoDBTypes)
+            dynamo_item = self.rec_map(json_obj, self.conv_to_dynodb_types)
             dynamo_item["EventID-TaskID"] = "%d-%d" % (event_id, task_id)
 
             response = self.__table.put_item(
