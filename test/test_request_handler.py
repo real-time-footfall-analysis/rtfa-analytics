@@ -16,4 +16,4 @@ def test_average_stay_time_basic():
         handler = RequestHandler(static_data_source=static_data_interface, log_source=log_interface,
                                  data_dest=dest_interface)
         handler.execute_tasks(5)
-        dest_interface.update_object.assert_called_once_with(1, 0, {'a': 7.0})
+        dest_interface.update_object.assert_called_once_with(1, 0, {'result': {'a': 7.0}})
