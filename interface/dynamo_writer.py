@@ -5,8 +5,8 @@ import logging
 import sys
 import boto3
 
-class DynamoWriter(DestinationInterface):
 
+class DynamoWriter(DestinationInterface):
     def __init__(self):
         super().__init__()
 
@@ -16,7 +16,8 @@ class DynamoWriter(DestinationInterface):
             'dynamo_table': 'analytics_results'
         }
 
-        self.__dynamodb = boto3.resource('dynamodb', region_name=self.config['region'], endpoint_url=self.config['dynamo_endpoint'])
+        self.__dynamodb = boto3.resource('dynamodb', region_name=self.config['region'],
+                                         endpoint_url=self.config['dynamo_endpoint'])
         self.__table = self.__dynamodb.Table(self.config['dynamo_table'])
         self.__logger = logging.StreamHandler(sys.stdout)
 
@@ -56,6 +57,6 @@ class DynamoWriter(DestinationInterface):
             respCode = response["ResponseMetadata"]["HTTPStatusCode"]
             if respCode != 200:
                 raise Exception("Response code " + str(respCode) + " from AWS")
-            
+
         except Exception as e:
             self.__logger.handleError("Failed to write to DynamoDB: " + str(e))
