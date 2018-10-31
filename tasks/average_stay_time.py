@@ -12,6 +12,8 @@ def average_stay_time(log_source: LogInterface, event_id):
 
     stay_times = {}
     for region in regions:
-        stay_times[region] = regions[region].average_stay_time()
+        stay_times[str(region)] = regions[region].average_stay_time()
 
-    return stay_times
+    obj_to_store = {'result': stay_times}
+
+    return obj_to_store
