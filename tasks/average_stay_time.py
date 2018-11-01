@@ -12,18 +12,17 @@ def average_stay_time(log_source: LogInterface, static_data_source: StaticDataIn
     regions = static_data_source.get_regions(event_id)
 
     # Populate regionTrackers list with all regions that have the "queue" TAG
-    for id in regions:
+    for id, _ in regions:
         regionTrackers[id] = RegionTracker(id)
 
     for uid, timestamp, region, entered in event_movements:
         if region in regionTrackers:
             regionTrackers[region].movements.append((timestamp, uid, entered))
 
-    stay_times = []
+    stay_times = {}
 
     for region in regionTrackers:
-        stay_times.append({"id": region, "waitTime": regionTrackers[region].average_stay_time()})
-
-    obj_to_store = {'result': json.dumps(stay_times)}
+        stay_times[str(region)] = regionTrackers[region].average_stay_time()
+    obj_to_store = {'result': stay_times}
 
     return obj_to_store
