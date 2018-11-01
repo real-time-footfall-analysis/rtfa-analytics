@@ -20,8 +20,9 @@ def average_stay_time(log_source: LogInterface, static_data_source: StaticDataIn
             regionTrackers[region].movements.append((timestamp, uid, entered))
 
     stay_times = {}
+
     for region in regionTrackers:
-        stay_times[str(region)] = regionTrackers[region].average_stay_time()
+        stay_times[region] = regionTrackers[region].average_stay_time()
 
     obj_to_store = {'result': stay_times}
 
