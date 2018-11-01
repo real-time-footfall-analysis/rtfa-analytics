@@ -29,3 +29,4 @@ class RequestHandler:
 
                 result = task(self.log_source, event_id)
                 self.data_dest.update_object(id, event_id, result)
+                return result
