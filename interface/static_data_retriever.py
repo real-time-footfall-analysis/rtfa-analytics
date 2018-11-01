@@ -62,7 +62,7 @@ class StaticDataRetriever(StaticDataInterface):
         return set(tasks[0][0])
 
     def get_regions(self, event_id) -> Set:
-        sql = "SELECT * FROM %s WHERE event_id=%s" % (REGION_TABLE, event_id)
+        sql = "SELECT DISTINCT id, is_queue FROM %s WHERE event_id=%s" % (REGION_TABLE, event_id)
         rows = self.__connect_and_execute(sql)
         return set(rows)
 

@@ -23,10 +23,15 @@ class RequestHandler:
         for event_id in live_events:
             enabled_task_ids = self.static_data_source.get_enabled_tasks(event_id)
             executables = enabled_task_ids & tasks_in_frequency_group
-
+            print(executables)
             for id in executables:
+                print(id)
                 task = TASK_IDS[id]
 
                 result = task(self.log_source, self.static_data_source, event_id)
                 self.data_dest.update_object(id, event_id, result)
-                return result
+
+        return True
+
+r = RequestHandler()
+r.execute_tasks(5)
