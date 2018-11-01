@@ -27,6 +27,6 @@ class RequestHandler:
             for id in executables:
                 task = TASK_IDS[id]
 
-                result = task(self.log_source, event_id)
+                result = task(self.log_source, self.static_data_source, event_id)
                 self.data_dest.update_object(id, event_id, result)
                 return result

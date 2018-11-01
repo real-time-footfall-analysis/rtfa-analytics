@@ -1,18 +1,27 @@
 from interface.log_interface import LogInterface
+from interface.static_data_interface import StaticDataInterface
 from utils.region_tracker import RegionTracker
 
 
-def average_stay_time(log_source: LogInterface, event_id):
+def average_stay_time(log_source: LogInterface, static_data_source: StaticDataInterface, event_id):
     event_movements = log_source.retrieve_event_movements(event_id)
-    regions = {}
+    regionTrackers = {}
+
+    # Get list of regions from RDS Static event DB
+    regions = static_data_source.get_regions(event_id)
+
+    # Populate regionTrackers list with all regions that have the "queue" TAG
+    for id, _ ,_ ,_ ,_ ,_ ,_ ,_ ,_ ,isQueue in regions:
+        if isQueue:
+            regionTrackers[id] = RegionTracker(id)
+
     for uid, timestamp, region, entered in event_movements:
-        if region not in regions:
-            regions[region] = RegionTracker(region)
-        regions[region].movements.append((timestamp, uid, entered))
+        if region in regionTrackers:
+            regionTrackers[region].movements.append((timestamp, uid, entered))
 
     stay_times = {}
-    for region in regions:
-        stay_times[str(region)] = regions[region].average_stay_time()
+    for region in regionTrackers:
+        stay_times[str(region)] = regionTrackers[region].average_stay_time()
 
     obj_to_store = {'result': stay_times}
 

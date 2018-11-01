@@ -7,6 +7,8 @@ from typing import Set
 from interface.static_data_interface import StaticDataInterface
 
 DEFAULT_ENABLED_EVENT_TASKS_TABLE = "event_tasks"
+REGION_TABLE = "region"
+
 
 
 class StaticDataRetriever(StaticDataInterface):
@@ -58,3 +60,10 @@ class StaticDataRetriever(StaticDataInterface):
         sql = "SELECT tasks FROM %s WHERE event_id=%s" % (self.enabled_event_tasks_table, event_id)
         tasks = self.__connect_and_execute(sql)
         return set(tasks[0][0])
+
+    def get_regions(self, event_id) -> Set:
+        sql = "SELECT * FROM %s WHERE event_id=%s" % (REGION_TABLE, event_id)
+        rows = self.__connect_and_execute(sql)
+        return set(rows)
+
+

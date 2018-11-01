@@ -9,3 +9,6 @@ class StaticDataInterface:
 
     # Returns set of enabled task ids for a particular event.
     def get_enabled_tasks(self, event_id) -> Set: pass
+
+    # Returns all regions for a event
+    def get_regions(self, event_id) -> Set: pass
