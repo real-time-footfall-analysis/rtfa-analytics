@@ -30,6 +30,3 @@ class RequestHandler:
                 self.data_dest.update_object(id, event_id, result)
 
         return True
-
-r = RequestHandler()
-r.execute_tasks(5)
