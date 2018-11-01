@@ -13,7 +13,8 @@ def health():
 @app.route("/compute/<int:freqGroupID>")
 def handle_compute(freqGroupID):
     handler = RequestHandler()
-    handler.execute_tasks(freqGroupID)
+    result = handler.execute_tasks(freqGroupID)
+    return result, 200
 
 
 if __name__ == '__main__':
