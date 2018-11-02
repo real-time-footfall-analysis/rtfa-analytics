@@ -47,12 +47,12 @@ class RedshiftRetriever(LogInterface):
         # Retrieves and returns movements of all people from start (inclusive) to end (exclusive), or ever if left None.
 
         # Generate SQL statement.
-        fields = ", ".join(["uuid", "\"occurredAt\"", "regionId", "entering"])
+        fields = ", ".join(["uuid", "occurredAt", "regionId", "entering"])
 
         constraints = "eventId=%s" % event_id
         constraints += " AND occurredAt >= %s" % time_start if time_start is not None else ""
         constraints += " AND occurredAt < %s" % time_end if time_end is not None else ""
-        sql = "SELECT %s FROM %s WHERE %s" % (fields, self.log_table_name, constraints)
+        sql = "SELECT %s FROM %s WHERE %s ORDER BY occurredAt ASC" % (fields, self.log_table_name, constraints)
         rows = self.__connect_and_execute(sql)
 
         return rows
@@ -61,9 +61,9 @@ class RedshiftRetriever(LogInterface):
         # Retrieves and returns movements for a given person uid.
 
         # Generate SQL and execute statement.
-        fields = ", ".join(["\"occurredAt\"", "regionId", "entering"])
+        fields = ", ".join(["occurredAt", "regionId", "entering"])
         constraints = "eventId=%s AND uuid=\"%s\"" % (event_id, uid)
-        sql = "SELECT %s FROM %s WHERE %s" % (fields, self.log_table_name, constraints)
+        sql = "SELECT %s FROM %s WHERE %s ORDER BY occurredAt ASC" % (fields, self.log_table_name, constraints)
         rows = self.__connect_and_execute(sql)
 
         return rows
