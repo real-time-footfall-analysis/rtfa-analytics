@@ -25,6 +25,6 @@ def average_queue_time(log_source: LogInterface, static_data_source: StaticDataI
     for region in regionTrackers:
         stay_times.append({"id": region, "waitTime": regionTrackers[region].average_stay_time()})
 
-    obj_to_store = {'result': json.dumps(stay_times)}
+    obj_to_store = {'result': stay_times}
 
     return obj_to_store
