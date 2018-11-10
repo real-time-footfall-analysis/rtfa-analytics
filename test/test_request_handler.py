@@ -9,7 +9,7 @@ def test_average_stay_time_basic():
             patch('interface.destination_interface.DestinationInterface') as dest_interface:
         # Patch methods.
         static_data_interface.get_running_events.return_value = {0}
-        static_data_interface.get_regions.return_value = {(1, True)}
+        static_data_interface.get_regions.return_value = {1}
         static_data_interface.get_enabled_tasks.return_value = {1}
         log_interface.retrieve_event_movements.return_value = [("uuid", 392, 1, True), ("uuid", 399, 1, False)]
 

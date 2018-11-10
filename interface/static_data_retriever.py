@@ -63,7 +63,7 @@ class StaticDataRetriever(StaticDataInterface):
     def get_regions(self, event_id) -> Set:
         sql = "SELECT DISTINCT id FROM %s WHERE event_id=%s" % (REGION_TABLE, event_id)
         rows = self.__connect_and_execute(sql)
-        return set(rows)
+        return set([row[0] for row in rows])
 
     # Returns particular attribute for all regions for an event.
     def get_region_attributes(self, event_id, *attributes) -> Dict:

@@ -6,23 +6,23 @@ import json
 
 def average_queue_time(log_source: LogInterface, static_data_source: StaticDataInterface, event_id):
     event_movements = log_source.retrieve_event_movements(event_id)
-    regionTrackers = {}
+    region_trackers = {}
 
     # Get list of regions from RDS Static event DB
     regions = static_data_source.get_region_attributes(event_id, "is_queue")
 
-    # Populate regionTrackers list with all regions that have the "queue" TAG
+    # Populate region_trackers list with all regions that have the "queue" TAG
     for id, is_queue in regions.items():
         if is_queue:
-            regionTrackers[id] = RegionTracker(id)
+            region_trackers[id] = RegionTracker(id)
 
     for uid, timestamp, region, entered in event_movements:
-        if region in regionTrackers:
-            regionTrackers[region].movements.append((timestamp, uid, entered))
+        if region in region_trackers:
+            region_trackers[region].movements.append((timestamp, uid, entered))
 
     stay_times = []
 
-    for region in regionTrackers:
-        stay_times.append({"id": region, "waitTime": regionTrackers[region].average_stay_time()})
+    for region in region_trackers:
+        stay_times.append({"id": region, "waitTime": region_trackers[region].average_stay_time()})
 
     return stay_times
