@@ -1,28 +1,31 @@
-from interface.log_interface import LogInterface
-from interface.static_data_interface import StaticDataInterface
+from tasks.Task import Task
 from utils.region_tracker import RegionTracker
-import json
 
 
-def average_queue_time(log_source: LogInterface, static_data_source: StaticDataInterface, event_id):
-    event_movements = log_source.retrieve_event_movements(event_id)
-    region_trackers = {}
+class AverageQueueTime(Task):
 
-    # Get list of regions from RDS Static event DB
-    regions = static_data_source.get_region_attributes(event_id, "is_queue")
+    def __init__(self, state_data, log_source, static_data_source, task_id):
+        super().__init__(state_data, log_source, static_data_source, task_id)
 
-    # Populate region_trackers list with all regions that have the "queue" TAG
-    for id, is_queue in regions.items():
-        if is_queue:
-            region_trackers[id] = RegionTracker(id)
+    def execute(self, event_id):
+        event_movements = self.log_source.retrieve_event_movements(event_id)
+        region_trackers = {}
 
-    for uid, timestamp, region, entered in event_movements:
-        if region in region_trackers:
-            region_trackers[region].movements.append((timestamp, uid, entered))
+        # Get list of regions from RDS Static event DB
+        regions = self.static_data_source.get_region_attributes(event_id, "is_queue")
 
-    stay_times = []
+        # Populate region_trackers list with all regions that have the "queue" TAG
+        for id, is_queue in regions.items():
+            if is_queue:
+                region_trackers[id] = RegionTracker(id)
 
-    for region in region_trackers:
-        stay_times.append({"id": region, "waitTime": region_trackers[region].average_stay_time()})
+        for uid, timestamp, region, entered in event_movements:
+            if region in region_trackers:
+                region_trackers[region].movements.append((timestamp, uid, entered))
 
-    return stay_times
+        stay_times = []
+
+        for region in region_trackers:
+            stay_times.append({"id": region, "waitTime": region_trackers[region].average_stay_time()})
+
+        return stay_times

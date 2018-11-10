@@ -1,13 +1,14 @@
-from tasks.average_queue_time import average_queue_time
-from tasks.average_stay_time import average_stay_time
-from tasks.bounce_rate import bounce_rate
+from tasks import Task
+from tasks.average_queue_time import AverageQueueTime
+from tasks.average_stay_time import AverageStayTime
+from tasks.bounce_rate import BounceRate
 from typing import Callable, Dict
 
 # Maps task ids to task definitions, used to find enabled tasks for a particular event,
-TASK_IDS: Dict[int, Callable[..., Dict]] = {
-    1: average_stay_time,
-    2: bounce_rate,
-    3: average_queue_time,
+TASK_IDS = {
+    1: AverageStayTime,
+    2: BounceRate,
+    3: AverageQueueTime,
 }
 
 # Maps frequency groups to set of task_ids to be executed at particular frequency.
