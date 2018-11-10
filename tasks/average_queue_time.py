@@ -1,4 +1,4 @@
-from tasks.Task import Task
+from tasks.task import Task
 from utils.region_tracker import RegionTracker
 
 
