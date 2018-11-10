@@ -12,12 +12,12 @@ def bounce_rate(log_source: LogInterface, static_data_source: StaticDataInterfac
             region_trackers[region] = RegionTracker(region)
         region_trackers[region].movements.append((timestamp, uid, entered))
 
-    region_thresholds = static_data_source.get_region_attribute(event_id, "bounce_rate_threshold")
+    region_thresholds = static_data_source.get_region_attributes(event_id, "bounce_rate_threshold")
 
     bounce_rates = {}
     for region in region_trackers:
         threshold = region_thresholds[region]
         bounce_rate = region_trackers[region].bounce_rate(threshold)
-        bounce_rates[region] = {"bounceRate": bounce_rate, "threshold": threshold}
+        bounce_rates[str(region)] = {"bounceRate": bounce_rate, "threshold": threshold}
 
     return bounce_rates

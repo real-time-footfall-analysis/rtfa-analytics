@@ -9,10 +9,10 @@ def average_queue_time(log_source: LogInterface, static_data_source: StaticDataI
     regionTrackers = {}
 
     # Get list of regions from RDS Static event DB
-    regions = static_data_source.get_regions(event_id)
+    regions = static_data_source.get_region_attributes(event_id, "is_queue")
 
     # Populate regionTrackers list with all regions that have the "queue" TAG
-    for id, is_queue in regions:
+    for id, is_queue in regions.items():
         if is_queue:
             regionTrackers[id] = RegionTracker(id)
 

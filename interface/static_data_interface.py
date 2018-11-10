@@ -14,4 +14,4 @@ class StaticDataInterface:
     def get_regions(self, event_id) -> Set: pass
 
     # Returns particular attribute for all regions for an event.
-    def get_region_attribute(self, event_id, attribute) -> Dict: pass
+    def get_region_attributes(self, event_id, *attributes) -> Dict: pass

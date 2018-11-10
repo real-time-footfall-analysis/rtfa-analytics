@@ -12,7 +12,7 @@ def average_stay_time(log_source: LogInterface, static_data_source: StaticDataIn
     regions = static_data_source.get_regions(event_id)
 
     # Populate regionTrackers list with all regions that have the "queue" TAG
-    for id, _ in regions:
+    for id in regions:
         regionTrackers[id] = RegionTracker(id)
 
     for uid, timestamp, region, entered in event_movements:
