@@ -46,8 +46,12 @@ class DynamoWriter(DestinationInterface):
             return item
 
     def update_object(self, task_id, event_id, json_obj: Dict):
+
+        # Wrap object in result dict.
+        obj_to_store = {"result": json_obj}
+
         try:
-            dynamo_item = self.__rec_map(json_obj, self.__conv_to_dynodb_types)
+            dynamo_item = self.__rec_map(obj_to_store, self.__conv_to_dynodb_types)
             dynamo_item["EventID-TaskID"] = "%d-%d" % (event_id, task_id)
 
             response = self.__table.put_item(
