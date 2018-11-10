@@ -1,4 +1,4 @@
-from typing import Set
+from typing import Set, Dict
 
 
 class StaticDataInterface:
@@ -10,5 +10,8 @@ class StaticDataInterface:
     # Returns set of enabled task ids for a particular event.
     def get_enabled_tasks(self, event_id) -> Set: pass
 
-    # Returns all regions for a event
+    # Returns all regions for a event.
     def get_regions(self, event_id) -> Set: pass
+
+    # Returns particular attribute for all regions for an event.
+    def get_region_attribute(self, event_id, attribute) -> Dict: pass
