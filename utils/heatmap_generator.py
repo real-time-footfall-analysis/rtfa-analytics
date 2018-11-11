@@ -56,13 +56,15 @@ class HeatmapGenerator:
         # Efficiently iterates through people, adding their location data to a history of heatmaps at a given
         # time_interval.
         heatmaps = defaultdict(lambda: defaultdict(int))
+        times = []
         start_time = start_time if start_time is not None else self.first_movement
         end_time = (start_time + duration) if duration is not None else self.last_movement
         for person in self.people.values():
             time = start_time
             while time + time_interval <= end_time:
                 time += time_interval
+                times.append(time)
                 location = person.get_next_location(time_interval)
                 if location is not None:
                     heatmaps[time][location] += 1
-        return heatmaps
+        return times, heatmaps

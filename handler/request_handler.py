@@ -38,3 +38,4 @@ class RequestHandler:
                 self.data_dest.update_object(task_id, event_id, result)
 
         return True
+
