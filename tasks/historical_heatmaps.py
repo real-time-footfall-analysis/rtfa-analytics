@@ -9,6 +9,6 @@ class HistoricalHeatmaps(Task):
     def execute(self, event_id):
         event_movements = self.log_source.retrieve_event_movements(event_id)
         heatmap_gen = HeatmapGenerator(event_id, event_movements)
-        times, heatmaps = heatmap_gen.build_heat_map_history(time_interval=36000)
+        times, heatmaps = heatmap_gen.build_heat_map_history(time_interval=100)
         result = {"timestamps": times, "data": heatmaps}
         return result

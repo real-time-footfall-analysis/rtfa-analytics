@@ -19,14 +19,14 @@ class RequestHandler:
         # Retrieves enabled tasks within frequency group, and executes them, for each live event.
 
         tasks_in_frequency_group = FREQUENCY_GROUPS[frequency_group]
-        live_events = self.static_data_source.get_running_events()
+        live_events = {1, 2} #self.static_data_source.get_running_events()
 
         # Go through live events, execute valid tasks.
         for event_id in live_events:
 
             # Find intersection of enabled tasks for event, and tasks in frequency group.
             enabled_task_ids = self.static_data_source.get_enabled_tasks(event_id)
-            executables = enabled_task_ids & tasks_in_frequency_group
+            executables = {4} #enabled_task_ids & tasks_in_frequency_group
             for task_id in executables:
                 task = TASK_IDS[task_id]
 
@@ -39,3 +39,5 @@ class RequestHandler:
 
         return True
 
+r = RequestHandler()
+r.execute_tasks(5)
