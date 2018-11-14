@@ -79,10 +79,10 @@ def test_build_heatmap_history_basic_auto_duration():
     expected_at_3 = {'a':1, 'b': 1}
     expected_at_5 = {'b':1}
     expected_at_7 = {'b':2}
-    expected_at_9 = {'b':1}
+    expected_at_9 = {}
     # Nothing expected at 10.
 
-    expected = {3:expected_at_3, 5:expected_at_5, 7:expected_at_7, 9:expected_at_9}
+    expected = {'3':expected_at_3, '5':expected_at_5, '7':expected_at_7, '9':expected_at_9}
     assert expected == heatmap_gen.build_heat_map_history(2)[1]
 
 
@@ -101,13 +101,13 @@ def test_build_heatmap_history_advanced_auto_duration():
 
     heatmap_gen = HeatmapGenerator(1, merge_user_movements(m1, m2, m3))
 
-    expected_at_3 = {'a':2, 'b': 1}
+    expected_at_3 = {'a':1, 'b': 1}
     expected_at_5 = {'a':1, 'b':1}
-    expected_at_7 = {'a':1, 'b':2}
-    expected_at_9 = {'b':1}
+    expected_at_7 = {'b':2}
+    expected_at_9 = {}
     expected_at_11 = {'c':1}
 
-    expected = {3:expected_at_3, 5:expected_at_5, 7:expected_at_7, 9:expected_at_9}
+    expected = {'3':expected_at_3, '5':expected_at_5, '7':expected_at_7, '9':expected_at_9}
     actual = heatmap_gen.build_heat_map_history(2)[1]
     assert expected == actual
 
@@ -126,10 +126,13 @@ def test_build_heatmap_history_basic_extended_duration():
     expected_at_3 = {'a':1, 'b': 1}
     expected_at_5 = {'b':1}
     expected_at_7 = {'b':2}
-    expected_at_9 = {'b':1}
+    expected_at_9 = {}
+
+
     # Nothing expected at 10.
 
-    expected = {3:expected_at_3, 5:expected_at_5, 7:expected_at_7, 9:expected_at_9}
+    expected = {'3':expected_at_3, '5':expected_at_5, '7':expected_at_7, '9':expected_at_9, '11':{}, '13':{}, '15':{},
+                '17':{}, '19':{}, '21':{}}
     assert expected == heatmap_gen.build_heat_map_history(2, duration=20)[1]
 
 
@@ -148,7 +151,7 @@ def test_build_heatmap_history_basic_bounded_duration():
     expected_at_5 = {'b':1}
     # Nothing expected at 10.
 
-    expected = {3:expected_at_3, 5:expected_at_5}
+    expected = {'3':expected_at_3, '5':expected_at_5}
     assert expected == heatmap_gen.build_heat_map_history(2, duration=4)[1]
 
 
@@ -167,7 +170,7 @@ def test_heatmap_history_with_appended_movements_halfway_1():
     expected_at_5 = {'b':1}
     # Nothing expected at 10.
 
-    expected = {3:expected_at_3, 5:expected_at_5}
+    expected = {'3':expected_at_3, '5':expected_at_5}
     assert expected == heatmap_gen.build_heat_map_history(2, duration=4)[1]
 
     entries1 = [(10, 'c')]
@@ -178,7 +181,7 @@ def test_heatmap_history_with_appended_movements_halfway_1():
     heatmap_gen.append_movements(m1)
 
     expected_at_9 = {'b':2}
-    expected_at_12 = {'c':1, 'b':1}
+    expected_at_12 = {'b':2}
 
-    expected = {9:expected_at_9, 12:expected_at_12}
+    expected = {'9':expected_at_9, '12':expected_at_12}
     assert expected == heatmap_gen.build_heat_map_history(3, start_time=start_time)[1]

@@ -18,3 +18,5 @@ def test_average_stay_time_basic():
                                  data_dest=dest_interface)
         handler.execute_tasks(5)
         dest_interface.update_object.assert_called_once_with(1, 0, {'1': 7.0})
+
+test_average_stay_time_basic()

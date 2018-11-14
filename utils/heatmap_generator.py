@@ -64,6 +64,7 @@ class HeatmapGenerator:
             person.initialise_location_iterator(time)
         while time + time_interval <= end_time:
             time += time_interval
+            print(time)
             if time not in heatmaps:
                 heatmaps[str(time)] = {}
                 times.append(time)
