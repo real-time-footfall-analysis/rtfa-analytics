@@ -38,6 +38,9 @@ class PersonTracker:
         # Returns whether there are more movements to receive from iterator.
         return self.entry_event_pointer < len(self.entries) or self.exit_event_pointer < len(self.exits)
 
+    def initialise_location_iterator(self, time_start):
+        self.time_pointer = time_start
+
     def get_next_location(self, time_interval):
 
         # Increase time pointer by set interval.
@@ -54,7 +57,8 @@ class PersonTracker:
                 self.current_locations[self.entries[self.entry_event_pointer][1]] = True
                 self.entry_event_pointer += 1
             else:
-                del self.current_locations[self.exits[self.exit_event_pointer][1]]
+                if self.exits[self.exit_event_pointer][1] in self.current_locations:
+                    del self.current_locations[self.exits[self.exit_event_pointer][1]]
                 self.exit_event_pointer += 1
 
         current_location = None

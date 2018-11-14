@@ -2,13 +2,12 @@ import os
 
 # Configuration dictionary.
 import psycopg2 as psycopg2
-from typing import Set
+from typing import Set, Dict
 
 from interface.static_data_interface import StaticDataInterface
 
 DEFAULT_ENABLED_EVENT_TASKS_TABLE = "event_tasks"
 REGION_TABLE = "region"
-
 
 
 class StaticDataRetriever(StaticDataInterface):
@@ -62,8 +61,14 @@ class StaticDataRetriever(StaticDataInterface):
         return set(tasks[0][0])
 
     def get_regions(self, event_id) -> Set:
-        sql = "SELECT DISTINCT id, is_queue FROM %s WHERE event_id=%s" % (REGION_TABLE, event_id)
+        sql = "SELECT DISTINCT id FROM %s WHERE event_id=%s" % (REGION_TABLE, event_id)
         rows = self.__connect_and_execute(sql)
-        return set(rows)
+        return set([row[0] for row in rows])
+
+    # Returns particular attribute for all regions for an event.
+    def get_region_attributes(self, event_id, *attributes) -> Dict:
+        sql = "SELECT DISTINCT id, %s FROM %s WHERE event_id=%s" % (",".join(attributes), REGION_TABLE, event_id)
+        rows = self.__connect_and_execute(sql)
+        return dict([(x[0], x[1:]) for x in rows])
 
 

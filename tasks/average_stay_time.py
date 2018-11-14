@@ -1,28 +1,29 @@
-from interface.log_interface import LogInterface
-from interface.static_data_interface import StaticDataInterface
+from tasks.task import Task
 from utils.region_tracker import RegionTracker
-import json
 
 
-def average_stay_time(log_source: LogInterface, static_data_source: StaticDataInterface, event_id):
-    event_movements = log_source.retrieve_event_movements(event_id)
-    regionTrackers = {}
+class AverageStayTime(Task):
+    def __init__(self, state_data, log_source, static_data_source, task_id):
+        super().__init__(state_data, log_source, static_data_source, task_id)
 
-    # Get list of regions from RDS Static event DB
-    regions = static_data_source.get_regions(event_id)
+    def execute(self, event_id):
+        event_movements = self.log_source.retrieve_event_movements(event_id)
+        regionTrackers = {}
 
-    # Populate regionTrackers list with all regions that have the "queue" TAG
-    for id, _ in regions:
-        regionTrackers[id] = RegionTracker(id)
+        # Get list of regions from RDS Static event DB
+        regions = self.static_data_source.get_regions(event_id)
 
-    for uid, timestamp, region, entered in event_movements:
-        if region in regionTrackers:
-            regionTrackers[region].movements.append((timestamp, uid, entered))
+        # Populate regionTrackers list with all regions that have the "queue" TAG
+        for id in regions:
+            regionTrackers[id] = RegionTracker(id)
 
-    stay_times = {}
+        for uid, timestamp, region, entered in event_movements:
+            if region in regionTrackers:
+                regionTrackers[region].movements.append((timestamp, uid, entered))
 
-    for region in regionTrackers:
-        stay_times[str(region)] = regionTrackers[region].average_stay_time()
-    obj_to_store = {'result': stay_times}
+        stay_times = {}
 
-    return obj_to_store
+        for region in regionTrackers:
+            stay_times[str(region)] = regionTrackers[region].average_stay_time()
+
+        return stay_times
