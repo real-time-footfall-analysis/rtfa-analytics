@@ -1,6 +1,7 @@
 from tasks.task import Task
 from utils.region_tracker import RegionTracker
 
+DEFAULT_BOUNCE_THRESHOLD = 300
 
 class BounceRate(Task):
     def __init__(self, state_data, log_source, static_data_source, task_id):
@@ -15,11 +16,10 @@ class BounceRate(Task):
                 region_trackers[region] = RegionTracker(region)
             region_trackers[region].movements.append((timestamp, uid, entered))
 
-        #region_thresholds = self.static_data_source.get_region_attributes(event_id, "bounce_rate_threshold")
-
+        region_thresholds = self.static_data_source.get_region_attributes(event_id, "bounce_rate_threshold")
         bounce_rates = {}
         for region in region_trackers:
-            threshold = 150 #region_thresholds[region]
+            threshold = region_thresholds[region][0] if region in region_thresholds else DEFAULT_BOUNCE_THRESHOLD
             bounce_rate = region_trackers[region].bounce_rate(threshold)
             bounce_rates[str(region)] = {"bounceRate": bounce_rate, "threshold": threshold}
 
