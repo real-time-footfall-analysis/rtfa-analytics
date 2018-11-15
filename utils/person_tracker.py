@@ -41,6 +41,10 @@ class PersonTracker:
     def initialise_location_iterator(self, time_start):
         self.time_pointer = time_start
 
+    def clear_movement_cache(self):
+        self.entries = []
+        self.exits = []
+
     def get_next_location(self, time_interval):
 
         # Increase time pointer by set interval.

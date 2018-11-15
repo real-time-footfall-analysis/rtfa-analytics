@@ -62,13 +62,12 @@ class HeatmapGenerator:
                 regions[person.get_location(t)] += 1
         return regions
 
-    def build_heat_map_history(self, time_interval, duration=None):
+    def build_heat_map_history(self, time_interval):
         # Efficiently iterates through people, adding their location data to a history of heatmaps at a given
         # time_interval.
-        start_time = self.generated_until
-        end_time = (start_time + duration) if duration is not None else self.last_movement
-        time = start_time
-        while time + time_interval <= end_time:
+        end_time = self.last_movement
+        time = self.generated_until
+        while time <= end_time:
             time += time_interval
             if time not in self.historical_heatmaps:
                 self.historical_heatmaps[str(time)] = {}
@@ -81,5 +80,9 @@ class HeatmapGenerator:
 
         # Record time of last generation.
         self.generated_until = self.last_movement
+
+        # Clear movement cache in people.
+        for person in self.people.values():
+            person.clear_movement_cache()
 
         return self.heatmap_times, self.historical_heatmaps
