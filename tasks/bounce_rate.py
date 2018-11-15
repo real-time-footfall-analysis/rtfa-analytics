@@ -3,6 +3,7 @@ from utils.region_tracker import RegionTracker
 
 DEFAULT_BOUNCE_THRESHOLD = 300
 
+
 class BounceRate(Task):
     def __init__(self, state_data, log_source, static_data_source, task_id):
         super().__init__(state_data, log_source, static_data_source, task_id)
