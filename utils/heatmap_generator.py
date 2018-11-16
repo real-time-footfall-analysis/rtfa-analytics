@@ -22,7 +22,7 @@ class HeatmapGenerator:
         self.people = {}
 
         # Populate map if given movements.
-        if movements is not None:
+        if movements:
 
             # Filter by uid and append to people.
             for uid, timestamp, region, entered in movements:
@@ -43,6 +43,9 @@ class HeatmapGenerator:
             person.initialise_location_iterator(self.generated_until)
 
     def append_movements(self, movements):
+        if not self.people:
+            self.first_movement = movements[0][1]
+
         for uid, timestamp, region, entered in movements:
             if uid not in self.people:
                 self.people[uid] = PersonTracker(uid)
@@ -65,6 +68,9 @@ class HeatmapGenerator:
     def build_heat_map_history(self, time_interval):
         # Efficiently iterates through people, adding their location data to a history of heatmaps at a given
         # time_interval.
+        if self.last_movement is None:
+            return [], {}
+
         end_time = self.last_movement
         time = self.generated_until
         while time <= end_time:
