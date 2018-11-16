@@ -12,7 +12,7 @@ class HistoricalHeatmaps(Task):
         heatmap_gen = self.state_data.get_task_state(self.task_id, event_id)
         if heatmap_gen is not None:
             # Get all movements since last movement, not including what has occurred in the current second.
-            last_movement = heatmap_gen.last_movement
+            last_movement = heatmap_gen.last_movement if heatmap_gen.last_movement else -1
             movements_since_last_update = self.log_source.retrieve_event_movements(event_id, time_start=last_movement+1,
                                                                                    time_end=time.time())
             heatmap_gen.append_movements(movements_since_last_update)

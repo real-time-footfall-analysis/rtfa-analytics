@@ -70,5 +70,3 @@ class StaticDataRetriever(StaticDataInterface):
         sql = "SELECT DISTINCT id, %s FROM %s WHERE event_id=%s" % (",".join(attributes), REGION_TABLE, event_id)
         rows = self.__connect_and_execute(sql)
         return dict([(x[0], x[1:]) for x in rows])
-
-

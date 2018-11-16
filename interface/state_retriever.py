@@ -72,7 +72,7 @@ class StateRetriever(StateInterface):
 
     def __retrieve_object(self, task_id, event_id):
         response = self.__table.get_item(
-            Key={"EventID-TaskID": "%d-%d" % (task_id, event_id)}
+            Key={"EventID-TaskID": "%d-%d" % (event_id, task_id)}
         )
         try:
             return response['Item']['result'].value

@@ -43,17 +43,18 @@ class HeatmapGenerator:
             person.initialise_location_iterator(self.generated_until)
 
     def append_movements(self, movements):
-        if not self.people:
-            self.first_movement = movements[0][1]
+        if movements:
+            if not self.people:
+                self.first_movement = movements[0][1]
 
-        for uid, timestamp, region, entered in movements:
-            if uid not in self.people:
-                self.people[uid] = PersonTracker(uid)
-            if entered:
-                self.people[uid].entries.append((timestamp, region))
-            else:
-                self.people[uid].exits.append((timestamp, region))
-        self.last_movement = movements[-1][1]
+            for uid, timestamp, region, entered in movements:
+                if uid not in self.people:
+                    self.people[uid] = PersonTracker(uid)
+                if entered:
+                    self.people[uid].entries.append((timestamp, region))
+                else:
+                    self.people[uid].exits.append((timestamp, region))
+            self.last_movement = movements[-1][1]
 
     def build_heat_map(self, t):
         # Builds a heat-map by region at a particular timestamp t. DO NOT use this function iteratively,
