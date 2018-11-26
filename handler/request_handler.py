@@ -36,10 +36,6 @@ class RequestHandler:
                 result = executor.execute(event_id)
 
                 # Update results table with new object.
-                print(result)
-                #self.data_dest.update_object(task_id, event_id, result)
+                self.data_dest.update_object(task_id, event_id, result)
 
         return True
-
-r = RequestHandler()
-r.execute_tasks(5)
