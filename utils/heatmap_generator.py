@@ -50,6 +50,7 @@ class HeatmapGenerator:
             for uid, timestamp, region, entered in movements:
                 if uid not in self.people:
                     self.people[uid] = PersonTracker(uid)
+                    self.people[uid].initialise_location_iterator(self.generated_until)
                 if entered:
                     self.people[uid].entries.append((timestamp, region))
                 else:
@@ -74,7 +75,7 @@ class HeatmapGenerator:
 
         end_time = self.last_movement
         time = self.generated_until
-        while time <= end_time:
+        while time + time_interval <= end_time:
             time += time_interval
             if time not in self.historical_heatmaps:
                 self.historical_heatmaps[str(time)] = {}
@@ -86,7 +87,7 @@ class HeatmapGenerator:
                         = self.historical_heatmaps[str(time)].get(str(location), 0) + 1
 
         # Record time of last generation.
-        self.generated_until = self.last_movement
+        self.generated_until = time
 
         # Clear movement cache in people.
         for person in self.people.values():

@@ -42,8 +42,10 @@ class PersonTracker:
         self.time_pointer = time_start
 
     def clear_movement_cache(self):
-        self.entries = []
-        self.exits = []
+        self.entries = self.entries[self.entry_event_pointer:]
+        self.exits = self.exits[self.exit_event_pointer:]
+        self.entry_event_pointer = 0
+        self.exit_event_pointer = 0
 
     def get_next_location(self, time_interval):
 
