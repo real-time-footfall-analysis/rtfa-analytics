@@ -1,21 +1,20 @@
-import time
-
 import math
+import time
 
 from tasks.task import Task
 from utils.heatmap_generator import HeatmapGenerator
+from utils.region_population_predictor import RegionPopulationPredictor
 
-DEFAULT_TIME_INTERVAL = 100
 
-
-class HistoricalHeatmaps(Task):
+class RegionPopulationPrediction(Task):
     def __init__(self, state_data, log_source, static_data_source, task_id):
         super().__init__(state_data, log_source, static_data_source, task_id)
 
     def execute(self, event_id):
-        heatmap_gen = self.state_data.get_task_state(self.task_id, event_id)
-        if heatmap_gen is not None:
+        state_package = self.state_data.get_task_state(self.task_id, event_id)
+        if state_package is not None:
             # Get all movements since last movement, not including what has occurred in the current second.
+            heatmap_gen, predictor = state_package
             last_movement = heatmap_gen.last_movement if heatmap_gen.last_movement else -1
             movements_since_last_update = self.log_source.retrieve_event_movements(event_id, time_start=last_movement+1,
                                                                                    time_end=math.floor(time.time()))
@@ -23,10 +22,17 @@ class HistoricalHeatmaps(Task):
         else:
             event_movements = self.log_source.retrieve_event_movements(event_id)
             heatmap_gen = HeatmapGenerator(event_id, event_movements)
+            predictor = RegionPopulationPredictor()
 
-        times, heatmaps = heatmap_gen.build_heat_map_history(time_interval=DEFAULT_TIME_INTERVAL)
-        result = {"timestamps": times, "data": heatmaps}
+        heatmaps = heatmap_gen.build_heat_map_history(100)[1]
+        for timestamp, heatmap in heatmaps.items():
+            predictor.add_heat_table(int(timestamp), heatmap)
 
-        # Save new heatmap generator state.
-        self.state_data.save_task_state(self.task_id, event_id, heatmap_gen)
+        result = predictor.calculate_average_region_population_by_30_min_buckets()
+
+        heatmap_gen.historical_heatmaps = {}
+        heatmap_gen.heatmap_times = []
+        state_package = (heatmap_gen, predictor)
+        self.state_data.save_task_state(self.task_id, event_id, state_package)
+
         return result
