@@ -5,7 +5,7 @@ import math
 from tasks.task import Task
 from utils.heatmap_generator import HeatmapGenerator
 
-DEFAULT_TIME_INTERVAL = 100
+DEFAULT_TIME_INTERVAL = 300
 
 
 class HistoricalHeatmaps(Task):

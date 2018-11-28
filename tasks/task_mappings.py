@@ -15,5 +15,5 @@ TASK_IDS = {
 
 # Maps frequency groups to set of task_ids to be executed at particular frequency.
 FREQUENCY_GROUPS = {
-    5: {1, 2, 3, 4, 5}
+    5: {1, 2, 3, 4, 5},
 }
