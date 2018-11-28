@@ -5,6 +5,7 @@ class RegionPopulationPredictor:
     def __init__(self):
         self.accumulated_populations_by_30_mins_by_region = {}
         self.num_samples_by_30_min_bucket = defaultdict(int)
+        self.max_per_region = defaultdict(int)
 
     def add_heat_table(self, time_of_table, table):
 
@@ -18,13 +19,18 @@ class RegionPopulationPredictor:
 
         for region in table:
             self.accumulated_populations_by_30_mins_by_region[time_of_table][region] += table[region]
+            self.max_per_region[region] = max(self.max_per_region[region], table[region])
 
     def calculate_average_region_population_by_30_min_buckets(self):
-        result = {}
+        ratios = {}
+        counts = {}
         for time in self.accumulated_populations_by_30_mins_by_region:
             regions = self.accumulated_populations_by_30_mins_by_region[time]
             for region in regions:
-                if region not in result:
-                    result[region] = {}
-                result[str(region)][str(time)] = regions[region]//self.num_samples_by_30_min_bucket[time]
-        return result
+                if region not in counts:
+                    counts[str(region)] = {}
+                    ratios[str(region)] = {}
+                counts[str(region)][str(time)] = regions[region]//self.num_samples_by_30_min_bucket[time]
+                ratios[str(region)][str(time)] = counts[str(region)][str(time)] / self.max_per_region[region]
+
+        return {"counts": counts, "ratios": ratios}
